@@ -25,4 +25,9 @@ class AppTest < Minitest::Test
     get "/about.txt"
     assert_includes(last_response.body, "about.txt")
   end
+
+  def test_nonexistant_route
+    get "/not_a_file.txt"
+    assert_includes(last_response.body, "not_a_file.txt does not exist")
+  end
 end
