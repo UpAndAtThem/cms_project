@@ -17,7 +17,12 @@ end
 
 get "/:file_name" do
   @file_name = params['file_name']
-  @file = File.read("#{@root}/public/data/#{@file_name}")
 
-  erb :file
+  if @file_names.include? @file_name
+    @file = File.read("#{@root}/public/data/#{@file_name}")
+    erb :file
+  else
+    session[:error] = "#{@file_name} does not exist"
+    erb :files
+  end
 end
