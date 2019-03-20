@@ -23,5 +23,6 @@ class AppTest < Minitest::Test
 
   def test_about_page
     get "/about.txt"
+    assert_includes(last_response.body, "about.txt")
   end
 end
