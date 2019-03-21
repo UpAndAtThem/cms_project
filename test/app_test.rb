@@ -22,14 +22,19 @@ class AppTest < Minitest::Test
   end
 
   def test_about_page
-    get "/about.txt"
-    assert_includes(last_response.body, "about.txt")
+    get "/about.md"
+
+    assert_includes(last_response.body, "Early Concept")
   end
 
   def test_nonexistant_route
-    get "/not_a_file.txt"
+    get "/not_a_file.md"
     redirected_request = get "/"
 
-    assert_includes(redirected_request.body, "not_a_file.txt does not exist")
+    assert_includes(redirected_request.body, "not_a_file.md does not exist")
+  end
+
+  def test_markup_rendering
+    res = get "/about.md"
   end
 end
