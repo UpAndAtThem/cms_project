@@ -27,8 +27,9 @@ class AppTest < Minitest::Test
   end
 
   def test_nonexistant_route
-    non_route_res = get "/not_a_file.txt"
+    get "/not_a_file.txt"
+    redirected_request = get "/"
 
-    assert_includes(non_route_res.body, "not_a_file.txt does not exist")
+    assert_includes(redirected_request.body, "not_a_file.txt does not exist")
   end
 end

@@ -28,6 +28,6 @@ get "/:file_name" do
     erb :file
   else
     session[:error] = "#{@file_name} does not exist"
-    erb :files
+    redirect "/"
   end
 end
