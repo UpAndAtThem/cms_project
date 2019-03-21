@@ -5,6 +5,11 @@ require "tilt/erubis"
 require 'pry'
 require "find"
 
+configure do
+  enable :sessions
+  set :session_secret, 'super secret'
+end
+
 before do
   @root = File.expand_path("..", __FILE__)
   @files_directory = Find::find("./public/data")
