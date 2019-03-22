@@ -55,6 +55,6 @@ post "/:file_name/edit_file" do
   file = File.open("#{@root}/public/data/#{params[:file_name]}", "w") do |f|
     f.write params[:fileContents]
   end
-  
-  redirect "/#{params[:file_name]}"
+  session[:success] = "#{params[:file_name]} has been updated"
+  redirect "/"
 end
