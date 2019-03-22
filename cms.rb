@@ -38,3 +38,23 @@ get "/:file_name" do
     redirect "/"
   end
 end
+
+get "/:file_name/edit_file" do
+  @file_name = params['file_name']
+
+  if @files.include? @file_name
+    @file = File.read("#{@root}/public/data/#{@file_name}")
+    erb :edit_file
+  else
+    session[:error] = "#{@file_name} does not exist"
+    redirect "/"
+  end
+end
+
+post "/:file_name/edit_file" do
+  file = File.open("#{@root}/public/data/#{params[:file_name]}", "w") do |f|
+    f.write params[:fileContents]
+  end
+  
+  redirect "/#{params[:file_name]}"
+end
