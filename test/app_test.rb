@@ -4,11 +4,20 @@ require 'minitest/autorun'
 require 'rack/test'
 require 'pry'
 require "tilt/erubis"
+require "fileutils"
 
 require_relative "../cms.rb"
 
 class AppTest < Minitest::Test
   include Rack::Test::Methods
+
+  def setup
+    FileUtils.mkdir_p(data_path)
+  end
+
+  def teardown
+    FileUtils.rm_rf(data_path)
+  end
 
   def app
     Sinatra::Application
