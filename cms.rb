@@ -39,18 +39,27 @@ get "/" do
   erb :files
 end
 
+def load_file_content(path)
+  content = File.read(path)
+  case File.extname(path)
+  when ".txt"
+    headers["Content-Type"] = "text/plain"
+    content
+  when ".md"
+    erb render_markdown(content)
+  end
+end
+
 get "/:file_name" do
   @file_name = params['file_name']
   file_path = File.join(data_path, @file_name)
 
-  res = if @files.include? @file_name
-    @file = File.read(file_path)
-    render_markdown @file
+  if @files.include? @file_name
+    load_file_content file_path
   else
     session[:error] = "#{@file_name} does not exist"
     redirect "/"
   end
-  erb res
 end
 
 get "/:file_name/edit_file" do
