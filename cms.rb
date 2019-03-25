@@ -26,7 +26,9 @@ end
 
 before do
   @root = File.expand_path("..", __FILE__)
-  @files = Dir.glob(@root + "/data/*").map do |path|
+  file_path = File.join data_path, "*"
+
+  @files = Dir.glob(file_path).map do |path|
              File.basename(path)
            end
 end
@@ -39,21 +41,24 @@ end
 
 get "/:file_name" do
   @file_name = params['file_name']
+  file_path = File.join(data_path, @file_name)
 
-  if @files.include? @file_name
-    @file = File.read("#{@root}/data/#{@file_name}")
+  res = if @files.include? @file_name
+    @file = File.read(file_path)
     render_markdown @file
   else
     session[:error] = "#{@file_name} does not exist"
     redirect "/"
   end
+  erb res
 end
 
 get "/:file_name/edit_file" do
   @file_name = params['file_name']
+  file_path = File.join(data_path, @file_name)
 
   if @files.include? @file_name
-    @file = File.read("#{@root}/data/#{@file_name}")
+    @file = File.read(file_path)
     erb :edit_file
   else
     session[:error] = "#{@file_name} does not exist"
@@ -62,9 +67,14 @@ get "/:file_name/edit_file" do
 end
 
 post "/:file_name/edit_file" do
-  file = File.open("#{@root}/data/#{params[:file_name]}", "w") do |f|
+  file_name = params[:file_name]
+  file_path = File.join(data_path, file_name)
+
+  file = File.open(file_path , "w") do |f|
     f.write params[:fileContents]
   end
+
   session[:success] = "#{params[:file_name]} has been updated"
   redirect "/"
 end
+

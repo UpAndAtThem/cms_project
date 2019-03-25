@@ -23,14 +23,26 @@ class AppTest < Minitest::Test
     Sinatra::Application
   end
 
-  def test_index
-    get "/"
+  def create_document(name, content = "")
+    File.open(File.join(data_path, name), "w") do |file|
+      file.write(content)
+    end
+  end
 
+  def test_index
+    create_document "about.md", "about.md"
+    create_document "changes.txt", "changes.txt"
+
+    get "/"
+    binding.pry
     assert_equal 200, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
+    assert_includes last_response.body, "about.md"
+    assert_includes last_response.body, "changes.txt"
   end
 
   def test_about_page
+    create_document "about.md", "Early Concept"
     get "/about.md"
 
     assert_includes(last_response.body, "Early Concept")

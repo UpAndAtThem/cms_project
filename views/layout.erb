@@ -1,23 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <link rel="icon" href="data:,">
-  <title>CMS</title>
-</head>
-<body>
-  <main>
-    <% if session[:success]%>
-      <div class="flash success">
-        <p><%= session.delete(:success)%></p>
-      </div>
-    <% end %>
-
-    <% if session[:error]%>
-      <div class="flash error">
-        <p><%= session.delete(:error)%></p>
-      </div>
-    <% end %>
-    <%= yield %>
-  </main>
-</body>
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>CMS App</title>
+    <link rel="stylesheet" href="/stylesheets/layout.css">
+    <title>CMS</title>
+  </head>
+  <body>
+    <main>
+      <% if session[:success]%>
+        <div class="flash success">
+          <p><%= session.delete(:success)%></p>
+        </div>
+      <% end %>
+  
+      <% if session[:error]%>
+        <div class="flash error">
+          <p><%= session.delete(:error)%></p>
+        </div>
+      <% end %>
+      <%= yield %>
+    </main>
+  </body>
 </html>
