@@ -50,6 +50,10 @@ def load_file_content(path)
   end
 end
 
+get "/new_document" do
+  erb :new_document
+end
+
 get "/:file_name" do
   @file_name = params['file_name']
   file_path = File.join(data_path, @file_name)
@@ -84,6 +88,15 @@ post "/:file_name/edit_file" do
   end
 
   session[:success] = "#{params[:file_name]} has been updated"
+  redirect "/"
+end
+
+post "/new_document" do
+  file_path = File.join(data_path, params[:document_name])
+  
+  File.write(file_path, "")
+  session[:success] = "File: #{params[:document_name]} has been created"
+  
   redirect "/"
 end
 
