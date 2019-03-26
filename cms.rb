@@ -92,11 +92,17 @@ post "/:file_name/edit_file" do
 end
 
 post "/new_document" do
-  file_path = File.join(data_path, params[:document_name])
+  document_name = params[:document_name]
+  file_path = File.join(data_path, document_name)
   
-  File.write(file_path, "")
-  session[:success] = "File: #{params[:document_name]} has been created"
-  
-  redirect "/"
+  unless document_name.empty?
+    File.write(file_path, "")
+    session[:success] = "File: #{params[:document_name]} has been created"
+
+    redirect "/"
+  else
+    session[:error] = "The file name must be provided."
+    erb :new_document
+  end
 end
 

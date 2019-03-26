@@ -2,13 +2,12 @@ div.success {
   background:rgba(255,255,0,0.39);
 }
 
-div.success p {
+div.success .error p {
   padding: 8px;
 }
 
 div.error p {
-  color: red;
-  font-size: 25px;
+  background:rgba(255,0,0,0.39);
 }
 
 ul {
