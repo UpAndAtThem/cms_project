@@ -107,3 +107,6 @@ post "/new_file" do
   end
 end
 
+post "/delete/:file_name" do
+  binding.pry
+end

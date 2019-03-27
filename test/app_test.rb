@@ -72,4 +72,11 @@ class AppTest < Minitest::Test
     assert_includes redirect_res.body, "File: this.md has been created"
     assert_equal post_res.status, 302
   end
+
+  def test_new_document_fail
+    post_res = post "/new_file?file_name="
+
+    assert_equal post_res.status, 422
+    assert_includes post_res.body, "The file name must be provided."
+  end
 end
