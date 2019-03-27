@@ -108,5 +108,10 @@ post "/new_file" do
 end
 
 post "/delete/:file_name" do
-  binding.pry
+  file_name = params[:file_name]
+  path = data_path
+
+  File.delete(File.join(path, file_name))
+  session[:success] = "#{file_name} has been deleted."
+  redirect "/"
 end
