@@ -50,8 +50,8 @@ def load_file_content(path)
   end
 end
 
-get "/new_document" do
-  erb :new_document
+get "/new_file" do
+  erb :new_file
 end
 
 get "/:file_name" do
@@ -91,18 +91,19 @@ post "/:file_name/edit_file" do
   redirect "/"
 end
 
-post "/new_document" do
-  document_name = params[:document_name]
-  file_path = File.join(data_path, document_name)
+post "/new_file" do
+  file_name = params[:file_name]
+  file_path = File.join(data_path, file_name)
   
-  unless document_name.empty?
+  unless file_name.empty?
     File.write(file_path, "")
-    session[:success] = "File: #{params[:document_name]} has been created"
-
+    session[:success] = "File: #{params[:file_name]} has been created"
+    status 302
     redirect "/"
   else
     session[:error] = "The file name must be provided."
-    erb :new_document
+    status 422
+    erb :new_file
   end
 end
 

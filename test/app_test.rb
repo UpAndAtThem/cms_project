@@ -34,7 +34,7 @@ class AppTest < Minitest::Test
     create_document "changes.txt", "changes.txt"
 
     get "/"
-    binding.pry
+
     assert_equal 200, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
     assert_includes last_response.body, "about.md"
@@ -55,7 +55,21 @@ class AppTest < Minitest::Test
     assert_includes(redirected_request.body, "not_a_file.md does not exist")
   end
 
-  def test_markup_rendering
-    res = get "/about.md"
+  def test_edit_document
+    create_document "about.md"
+
+    post_res = post "/about.md/edit_file"
+    get_redirect_res = get "/"
+
+    assert_includes get_redirect_res.body, "about.md has been updated"
+    assert_equal post_res.status, 302
+  end
+
+  def test_new_document_creation
+    post_res = post "/new_file?file_name=this.md"
+    redirect_res = get "/"
+
+    assert_includes redirect_res.body, "File: this.md has been created"
+    assert_equal post_res.status, 302
   end
 end
