@@ -125,9 +125,11 @@ post "/delete/:file_name" do
 end
 
 post "/sign_in" do
-  @username = params[:username]
+  session[:username] = params[:username]
+  @username = session[:username]
+  password = params[:password]
 
-  if @username == 'admin' && @password == 'secret'
+  if session[:username] == 'admin' && password == 'secret'
     session[:signed_in] = true
     session[:success] = "Welcome!"
     redirect "/"
@@ -135,4 +137,10 @@ post "/sign_in" do
     session[:error] = "Wrong username or password"
     erb :sign_in
   end
+end
+
+post "/sign_out" do
+  session[:signed_in] = false
+  session[:success] = "You have been signed out."
+  redirect "/"
 end

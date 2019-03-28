@@ -15,3 +15,9 @@
   </ul>
 <% end %>
 <a href="/new_file">New File</a>
+<% if session[:signed_in] %>
+  <p>signed in as <%= session[:username] %></p>
+  <form action="/sign_out" method="post">
+    <button type="submit">Sign Out</button>
+  </form>
+<% end %>
