@@ -1,3 +1,8 @@
+<% unless session[:signed_in] %>
+  <form action="/sign_in" method="get">
+    <button type="submit">Sign In</button>
+  </form>
+<% end %>
 <% @files.each do |file| %>
   <ul>
     <li>

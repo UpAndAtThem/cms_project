@@ -1,0 +1,19 @@
+div.success {
+  background:rgba(255,255,0,0.39);
+}
+
+div.success .error p {
+  padding: 8px;
+}
+
+div.error p {
+  background:rgba(255,0,0,0.39);
+}
+
+ul {
+  margin: 0px;
+}
+
+textarea {
+  display: block;
+}

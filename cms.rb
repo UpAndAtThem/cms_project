@@ -35,7 +35,6 @@ end
 
 get "/" do
   pattern = File.join(data_path, "*")
-
   erb :files
 end
 
@@ -52,6 +51,10 @@ end
 
 get "/new_file" do
   erb :new_file
+end
+
+get "/sign_in" do
+  erb :sign_in
 end
 
 get "/:file_name" do
@@ -118,5 +121,18 @@ post "/delete/:file_name" do
     status 422
     session[:error] = "The file could not be found to be deleted"
     erb :files
+  end
+end
+
+post "/sign_in" do
+  @username = params[:username]
+
+  if @username == 'admin' && @password == 'secret'
+    session[:signed_in] = true
+    session[:success] = "Welcome!"
+    redirect "/"
+  else
+    session[:error] = "Wrong username or password"
+    erb :sign_in
   end
 end
