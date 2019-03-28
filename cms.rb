@@ -110,8 +110,13 @@ end
 post "/delete/:file_name" do
   file_name = params[:file_name]
   path = data_path
-
-  File.delete(File.join(path, file_name))
-  session[:success] = "#{file_name} has been deleted."
-  redirect "/"
+  if @files.include? file_name
+    File.delete(File.join(path, file_name))
+    session[:success] = "#{file_name} has been deleted."
+    redirect "/"
+  else
+    status 422
+    session[:error] = "The file could not be found to be deleted"
+    erb :files
+  end
 end

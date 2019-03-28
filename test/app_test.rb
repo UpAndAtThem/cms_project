@@ -79,4 +79,20 @@ class AppTest < Minitest::Test
     assert_equal post_res.status, 422
     assert_includes post_res.body, "The file name must be provided."
   end
+
+  def test_delete_document
+    create_document "document.md"
+    post_res = post "/delete/document.md"
+    redirect_res = get "/"
+
+    assert_includes redirect_res.body, "document.md has been deleted"
+    assert_equal 302, post_res.status
+  end
+
+  def test_delete_fail
+    post_res = post "/delete/document.notreal"
+
+    assert_equal 422, post_res.status
+    assert_includes post_res.body, "The file could not be found to be deleted"
+  end
 end
