@@ -23,6 +23,10 @@ class AppTest < Minitest::Test
     Sinatra::Application
   end
 
+  def session
+    last_request.env["rack.session"]
+  end
+
   def create_document(name, content = "")
     File.open(File.join(data_path, name), "w") do |file|
       file.write(content)
@@ -51,7 +55,7 @@ class AppTest < Minitest::Test
   def test_nonexistant_route
     get "/not_a_file.md"
     redirected_request = get "/"
-
+    binding.pry
     assert_includes(redirected_request.body, "not_a_file.md does not exist")
   end
 
