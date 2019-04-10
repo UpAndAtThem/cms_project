@@ -55,7 +55,7 @@ class AppTest < Minitest::Test
   def test_nonexistant_route
     get "/not_a_file.md"
     redirected_request = get "/"
-    binding.pry
+
     assert_includes(redirected_request.body, "not_a_file.md does not exist")
   end
 

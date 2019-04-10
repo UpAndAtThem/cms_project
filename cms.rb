@@ -46,6 +46,9 @@ def load_file_content(path)
     content
   when ".md"
     erb render_markdown(content)
+  when ".rb"
+    headers["Content-Type"] = "text/plain"
+    content
   end
 end
 
@@ -61,7 +64,7 @@ get "/:file_name" do
   @file_name = params['file_name']
   file_path = File.join(data_path, @file_name)
   session[:hello] = "whatup"
-  
+  binding.pry
   if @files.include? @file_name
     load_file_content file_path
   else
