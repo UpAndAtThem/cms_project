@@ -37,8 +37,8 @@ class AppTest < Minitest::Test
     create_document "about.md", "about.md"
     create_document "changes.txt", "changes.txt"
 
-    get "/"
-
+    get_res = get "/", {}, {message: "This is the message"}
+    binding.pry
     assert_equal 200, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
     assert_includes last_response.body, "about.md"
@@ -95,8 +95,12 @@ class AppTest < Minitest::Test
 
   def test_delete_fail
     post_res = post "/delete/document.notreal"
-
     assert_equal 422, post_res.status
-    assert_includes post_res.body, "The file could not be found to be deleted"
+    assert_includes session[:success], "The file could not be found to be deleted"
+  end
+
+  def test_sign_in
+    res = post "/sign_in", {message: "sign in message"}
+    binding.pry
   end
 end
