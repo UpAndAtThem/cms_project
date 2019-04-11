@@ -33,6 +33,10 @@ class AppTest < Minitest::Test
     end
   end
 
+  def admin_session
+    {"rack.session" => {username: "admin", password: "secret"}}
+  end
+
   def test_index
     create_document "about.md", "about.md"
     create_document "changes.txt", "changes.txt"
@@ -54,30 +58,28 @@ class AppTest < Minitest::Test
 
   def test_nonexistant_route
     get "/not_a_file.md"
-    redirected_request = get "/"
 
-    assert_includes(redirected_request.body, "not_a_file.md does not exist")
+    assert_includes(session[:error], "not_a_file.md does not exist")
   end
 
   def test_edit_document
     create_document "about.md"
 
-    post_res = post "/about.md/edit_file"
-    get_redirect_res = get "/"
+    post_res = post "/about.md/edit_file", {}, admin_session
 
-    assert_includes get_redirect_res.body, "about.md has been updated"
+    assert_includes session[:success], "about.md has been updated"
     assert_equal post_res.status, 302
   end
 
   def test_new_document_creation
-    post_res = post "/new_file?file_name=this.md"
+    post_res = post "/new_file", {file_name: "this.md"}, admin_session
 
     assert_includes "File: this.md has been created", session[:success]
     assert_equal post_res.status, 302
   end
 
   def test_new_document_fail
-    post_res = post "/new_file", {"file_name" => ""}, {"rack.session" => {message: "new message from test"}}
+    post_res = post "/new_file", {"file_name" => ""}, admin_session
 
     assert_equal post_res.status, 422
     assert_includes post_res.body, "The file name must be provided."
@@ -85,20 +87,22 @@ class AppTest < Minitest::Test
 
   def test_delete_document
     create_document "document.md"
-    post_res = post "/delete/document.md"
+    post_res = post "/delete/document.md", {}, admin_session
 
     assert_includes session[:success], "document.md has been deleted"
     assert_equal 302, post_res.status
   end
 
   def test_delete_fail
-    post_res = post "/delete/document.notreal"
+    post_res = post "/delete/document.notreal", {}, admin_session
 
     assert_equal 422, post_res.status
     assert_includes post_res.body, "The file could not be found to be deleted"
   end
 
   def test_sign_in
-    res = post "/sign_in", {message: "sign in message"}
+    res = post "/sign_in", {username: "admin", password: "secret"}
+
+    assert(session[:signed_in])
   end
 end

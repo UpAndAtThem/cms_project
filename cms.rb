@@ -24,6 +24,15 @@ def render_markdown(text)
   markdown.render(text)
 end
 
+def authorized?
+  session[:username] == 'admin' && session[:password] == 'secret'
+end
+
+def restrict
+  session[:error] = "You must be signed in to preform this"
+  redirect "/"
+end
+
 before do
   @root = File.expand_path("..", __FILE__)
   file_path = File.join data_path, "*"
@@ -54,6 +63,7 @@ def load_file_content(path)
 end
 
 get "/new_file" do
+  restrict unless authorized?
   erb :new_file
 end
 
@@ -74,6 +84,8 @@ get "/:file_name" do
 end
 
 get "/:file_name/edit_file" do
+  restrict unless authorized?
+
   @file_name = params['file_name']
   file_path = File.join(data_path, @file_name)
 
@@ -87,6 +99,8 @@ get "/:file_name/edit_file" do
 end
 
 post "/:file_name/edit_file" do
+  restrict unless authorized?
+
   file_name = params[:file_name]
   file_path = File.join(data_path, file_name)
 
@@ -99,6 +113,8 @@ post "/:file_name/edit_file" do
 end
 
 post "/new_file" do
+  restrict unless authorized?
+
   file_name = params[:file_name]
   file_path = File.join(data_path, file_name)
   
@@ -115,6 +131,8 @@ post "/new_file" do
 end
 
 post "/delete/:file_name" do
+  restrict unless authorized?
+
   file_name = params[:file_name]
   path = data_path
 
@@ -134,7 +152,7 @@ post "/sign_in" do
   @username = session[:username]
   session[:password] = params[:password]
 
-  if session[:username] == 'admin' && session[:password] == 'secret'
+  if authorized?
     session[:signed_in] = true
     session[:success] = "Welcome!"
     redirect "/"
@@ -145,7 +163,12 @@ post "/sign_in" do
 end
 
 post "/sign_out" do
+  restrict unless authorized?
+
   session[:signed_in] = false
+  session[:username] = ""
+  session[:password] = ""
   session[:success] = "You have been signed out."
+
   redirect "/"
 end
