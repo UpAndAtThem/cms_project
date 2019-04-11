@@ -117,6 +117,7 @@ end
 post "/delete/:file_name" do
   file_name = params[:file_name]
   path = data_path
+
   if @files.include? file_name
     File.delete(File.join(path, file_name))
     session[:success] = "#{file_name} has been deleted."
@@ -129,12 +130,11 @@ post "/delete/:file_name" do
 end
 
 post "/sign_in" do
-  binding.pry
   session[:username] = params[:username]
   @username = session[:username]
-  password = params[:password]
+  session[:password] = params[:password]
 
-  if session[:username] == 'admin' && password == 'secret'
+  if session[:username] == 'admin' && session[:password] == 'secret'
     session[:signed_in] = true
     session[:success] = "Welcome!"
     redirect "/"

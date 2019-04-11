@@ -38,7 +38,7 @@ class AppTest < Minitest::Test
     create_document "changes.txt", "changes.txt"
 
     get_res = get "/", {}, {message: "This is the message"}
-    binding.pry
+
     assert_equal 200, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
     assert_includes last_response.body, "about.md"
@@ -71,14 +71,13 @@ class AppTest < Minitest::Test
 
   def test_new_document_creation
     post_res = post "/new_file?file_name=this.md"
-    redirect_res = get "/"
 
-    assert_includes redirect_res.body, "File: this.md has been created"
+    assert_includes "File: this.md has been created", session[:success]
     assert_equal post_res.status, 302
   end
 
   def test_new_document_fail
-    post_res = post "/new_file?file_name="
+    post_res = post "/new_file", {"file_name" => ""}, {"rack.session" => {message: "new message from test"}}
 
     assert_equal post_res.status, 422
     assert_includes post_res.body, "The file name must be provided."
@@ -87,20 +86,19 @@ class AppTest < Minitest::Test
   def test_delete_document
     create_document "document.md"
     post_res = post "/delete/document.md"
-    redirect_res = get "/"
 
-    assert_includes redirect_res.body, "document.md has been deleted"
+    assert_includes session[:success], "document.md has been deleted"
     assert_equal 302, post_res.status
   end
 
   def test_delete_fail
     post_res = post "/delete/document.notreal"
+
     assert_equal 422, post_res.status
-    assert_includes session[:success], "The file could not be found to be deleted"
+    assert_includes post_res.body, "The file could not be found to be deleted"
   end
 
   def test_sign_in
     res = post "/sign_in", {message: "sign in message"}
-    binding.pry
   end
 end
