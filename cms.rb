@@ -5,6 +5,7 @@ require "tilt/erubis"
 require "pry"
 require "find"
 require "redcarpet"
+require 'yaml'
 
 configure do
   enable :sessions
@@ -25,7 +26,8 @@ def render_markdown(text)
 end
 
 def authorized?
-  session[:username] == 'admin' && session[:password] == 'secret'
+  users = YAML.load_file('users.yml')
+  users.has_key? session[:username]
 end
 
 def restrict
