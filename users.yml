@@ -1,3 +1,3 @@
-admin: secret
-jason: nelson
-bot: bleep
+admin: $2a$10$qUwqYtNLFX9AxZL1D/e0JOEwlxbyIxMe.ALqJ13BYz19dFoTGr3yy
+jason: $2a$10$MXKaSs0gj7i9BDXyxhgGieoCYRPFI7WaBK7cUTF6BrsimdqbkCHeC
+bot: $2a$10$//qklZIs3Y2TdY86IaHxl.BuJT.tqp.1pPgMX3gDiWfy4PviAgLuS

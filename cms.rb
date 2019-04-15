@@ -6,6 +6,7 @@ require "pry"
 require "find"
 require "redcarpet"
 require 'yaml'
+require 'bcrypt'
 
 configure do
   enable :sessions
@@ -16,7 +17,9 @@ def data_path
   if ENV["RACK_ENV"] == "test"
     File.expand_path("../test/data", __FILE__)
   else
-    File.expand_path("../data", __FILE__)
+    x = File.expand_path("../data", __FILE__)
+    p x
+    x
   end
 end
 
@@ -25,9 +28,20 @@ def render_markdown(text)
   markdown.render(text)
 end
 
-def authorized?
+def passwords_match(hashed_bcrypt_object, password_given)
+   hashed_bcrypt_object == password_given
+end
+
+def authorized? 
+  return false if session[:password].empty? || session[:username].empty?
+
   users = YAML.load_file('users.yml')
-  users.has_key? session[:username]
+  password_given = session[:password]
+
+  hashed_password = users[session[:username]]
+  bcrypt_password = BCrypt::Password.new(hashed_password)
+
+  users.has_key?(session[:username]) && passwords_match(bcrypt_password, password_given)
 end
 
 def restrict
@@ -45,7 +59,6 @@ before do
 end
 
 get "/" do
-  pattern = File.join(data_path, "*")
   erb :files
 end
 
@@ -153,6 +166,7 @@ post "/sign_in" do
   session[:username] = params[:username]
   @username = session[:username]
   session[:password] = params[:password]
+  @password = session[:password]
 
   if authorized?
     session[:signed_in] = true
