@@ -11,15 +11,14 @@ require 'bcrypt'
 configure do
   enable :sessions
   set :session_secret, 'super secret'
+  set :erb, escape_html: true
 end
 
 def data_path
   if ENV["RACK_ENV"] == "test"
     File.expand_path("../test/data", __FILE__)
   else
-    x = File.expand_path("../data", __FILE__)
-    p x
-    x
+    File.expand_path("../data", __FILE__)
   end
 end
 
@@ -162,7 +161,7 @@ post "/delete/:file_name" do
   end
 end
 
-post "/sign_in" do
+post "/sign_in" do  
   session[:username] = params[:username]
   @username = session[:username]
   session[:password] = params[:password]
